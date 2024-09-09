@@ -1,0 +1,21 @@
+.btn {
+    padding: var(--sz-sm);
+    border-radius: var(--sz-border-md);
+    font-size: var(--btn-fs);
+    border: none;
+    outline: none;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: var(--primary-clr);
+    color: var(--white-clr);
+}
+
+.btn-danger {
+    background-color: var(--danger-clr);
+    color: var(--white-clr);
+}

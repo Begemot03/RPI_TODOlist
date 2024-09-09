@@ -1,0 +1,21 @@
+.card {
+    width: fit-content;
+    background-color: var(--white-clr);
+    border-radius: var(--sz-border-lg);
+    padding: var(--sz-md);
+    box-shadow: var(--box-shadow);
+}
+
+.card__title {
+    font-size: var(--h2-fs);
+    font-weight: var(--bold);
+}
+
+.card__title:has(+.card__body) {
+    margin-bottom: var(--sz-md);
+}
+
+.card__body {
+    display: flex;
+    gap: var(--sz-sm);
+}

@@ -1,0 +1,74 @@
+.task-list {
+    --clr: #fff;
+
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 25%;
+}
+
+.task-list__title {    
+    width: fit-content;
+    padding: var(--sz-sm);
+    border-radius: var(--sz-border-md);
+    font-size: var(--task-title-fs);
+}
+
+.task-list__title:has(+.task-list__body) {
+    margin-bottom: var(--sz-md);
+}
+
+.task-list__item {
+    position: relative;
+    width: 100%;
+    padding: var(--sz-sm);
+    border-radius: var(--sz-border-md);
+    background-color: var(--white-clr);
+    border: var(--border);
+    font-size: var(--task-item-fs);
+}
+
+.task-list__title {
+    background: color-mix(in oklch, transparent, var(--clr) 20%);
+    color: var(--clr);
+}
+
+.task-list__item::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0.25rem;
+    background-color: var(--clr);
+    border-top-left-radius: var(--sz-border-md);
+    border-bottom-left-radius: var(--sz-border-md);
+}
+
+.task-list_primary {
+    --clr: var(--primary-clr);
+}
+
+.task-list_danger {
+    --clr: var(--danger-clr);
+}
+
+.task-list_secondary {
+    --clr: var(--secondary-clr);
+}
+
+.task-list_light {
+    --clr: var(--light-clr);
+}
+
+.task-list_success {
+    --clr: var(--success-clr);
+}
+
+.task-list_warning {
+    --clr: var(--warning-clr);
+}
+
+.task-list_info {
+    --clr: var(--info-clr);
+}

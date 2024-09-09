@@ -1,0 +1,4 @@
+.header {
+    padding: var(--sz-md) 0;
+    color: var(--white-clr);
+}
