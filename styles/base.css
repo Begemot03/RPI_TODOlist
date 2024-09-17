@@ -70,11 +70,6 @@ input {
 }
 
 
-.flex {
-    display: flex;
-    gap: var(--sz-sm);
-}
-
 .hidden {
     display: none;
 }

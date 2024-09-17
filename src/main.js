@@ -1,3 +1,9 @@
+import { render, RenderPosition } from "./framework/render.js"
+import FormAddTaskComponent from "./view/form-add-task-component.js.js";
+import HeaderComponent from "./view/header-component.js";
+import TaskBoardComponent from "./view/task-board-component.js";
+import TaskListComponent from "./view/task-list-component.js";
+
 function dragStartHandler(ev) {
     if(ev.target.classList.contains("task-list__item-editable")) return;
     ev.target.classList.add("task-list__item-selected");
@@ -53,6 +59,55 @@ function completeEditTask(task) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+    const app = document.querySelector(".app");
+
+    render(new HeaderComponent(), app, RenderPosition.BEFOREEND);
+    render(new FormAddTaskComponent(), app, RenderPosition.BEFOREEND);
+    render(new TaskBoardComponent(), app, RenderPosition.BEFOREEND, [
+        {
+            name: "List1",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        }, {
+            name: "List2",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        }, {
+            name: "List3",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        }, {
+            name: "List4",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        }, {
+            name: "List5",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        }, {
+            name: "List6",
+            tasks: [
+                { name: "Task1", },
+                { name: "Task2", },
+                { name: "Task3", },
+            ]
+        },
+    ]);
     const taskItems = document.querySelectorAll(".task-list__item");
     const taskLists = document.querySelectorAll(".task-list");
 
