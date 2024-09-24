@@ -1,16 +1,11 @@
 import BaseComponent from "../framework/base-component.js";
-import TaskItemComponent from "./task-item-component.js";
 
-function createTaskListComponentTemplate(list) {
-    console.log()
-    const tasksTemplate = list.tasks.map(task => new TaskItemComponent().getTemplate(task)).join("");
-
+function createTaskListComponentTemplate(name, status) {
     return (
         `
-        <div class="task-list task-list_primary">
-            <div class="task-list__title task-list__title-primary">${list.name}</div>
+        <div class="task-list task-list_${status}">
+            <div class="task-list__title task-list__title-primary">${name}</div>
             <div class="task-list__body">
-                ${tasksTemplate}
             </div>
         </div>
         `
@@ -20,7 +15,13 @@ function createTaskListComponentTemplate(list) {
 }
 
 export default class TaskListComponent extends BaseComponent {
-    getTemplate(args) {
-        return createTaskListComponentTemplate(args);
+    constructor({ name, status }) {
+        super();
+        this.name = name;
+        this.status = status;
+    }
+
+    getTemplate() {
+        return createTaskListComponentTemplate(this.name, this.status);
     }
 }

@@ -1,13 +1,11 @@
 import BaseComponent from "../framework/base-component.js";
 import TaskListComponent from "./task-list-component.js";
 
-function createTaskBoardComponentTemplate(lists) {
-    const listsTemplate = lists.map(list => new TaskListComponent().getTemplate(list)).join("");
+function createTaskBoardComponentTemplate() {
     return (
         `
         <section>
             <div class="container task-board">
-                ${listsTemplate}
             </div>
         </section>
         `

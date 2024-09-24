@@ -1,4 +1,6 @@
 import { render, RenderPosition } from "./framework/render.js"
+import TasksModel from "./model/tasks-model.js";
+import TaskBoardPresenter from "./presenter/task-board-presenter.js";
 import FormAddTaskComponent from "./view/form-add-task-component.js.js";
 import HeaderComponent from "./view/header-component.js";
 import TaskBoardComponent from "./view/task-board-component.js";
@@ -63,51 +65,20 @@ window.addEventListener("DOMContentLoaded", () => {
 
     render(new HeaderComponent(), app, RenderPosition.BEFOREEND);
     render(new FormAddTaskComponent(), app, RenderPosition.BEFOREEND);
-    render(new TaskBoardComponent(), app, RenderPosition.BEFOREEND, [
-        {
-            name: "List1",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        }, {
-            name: "List2",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        }, {
-            name: "List3",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        }, {
-            name: "List4",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        }, {
-            name: "List5",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        }, {
-            name: "List6",
-            tasks: [
-                { name: "Task1", },
-                { name: "Task2", },
-                { name: "Task3", },
-            ]
-        },
-    ]);
+    
+    const taskBoardContainer = new TaskBoardComponent();
+    render(taskBoardContainer,  app, RenderPosition.BEFOREEND);
+
+    
+    const tasksModel = new TasksModel();
+    const taskBoardPresenter = new TaskBoardPresenter({
+        boardContainer: app,
+        tasksModel
+    });
+
+    taskBoardPresenter.init();
+
+
     const taskItems = document.querySelectorAll(".task-list__item");
     const taskLists = document.querySelectorAll(".task-list");
 
