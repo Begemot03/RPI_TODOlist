@@ -59,6 +59,19 @@
     border: var(--border);
 }
 
+.task-list__empty-item {
+    --clr: grey;
+    background-color: transparent;
+    position: relative;
+    width: 100%;
+    padding: var(--sz-sm);
+    border-radius: var(--sz-border-md);
+    border: var(--border);
+    font-size: var(--task-item-fs);
+    color: var(--clr);
+    border-style: dashed;
+}
+
 .task-list__item::after {
     content: "";
     position: absolute;

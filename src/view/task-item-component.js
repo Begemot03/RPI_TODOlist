@@ -1,7 +1,6 @@
 import BaseComponent from "../framework/base-component.js";
 
 function createTaskItemComponentTemplate(name) {
-    console.log(name)
     return(
         `<div class="task-list__item">
             <span class="task-list__item-title">${name}</span>

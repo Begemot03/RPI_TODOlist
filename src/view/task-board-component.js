@@ -13,7 +13,7 @@ function createTaskBoardComponentTemplate() {
 }
 
 export default class TaskBoardComponent extends BaseComponent {
-    getTemplate(args) {
-        return createTaskBoardComponentTemplate(args);
+    getTemplate() {
+        return createTaskBoardComponentTemplate();
     }
 }
