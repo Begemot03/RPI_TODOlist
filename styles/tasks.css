@@ -48,6 +48,9 @@
     padding: 10px;
     min-height: var(--sz-md);
     border: var(--border);
+    display: grid;
+    gap: var(--sz-sm);
+    grid-template-columns: 1fr;
 }
 
 .task-list__body.task-list__body-over {
@@ -82,10 +85,6 @@
     background-color: var(--clr);
     border-top-left-radius: var(--sz-border-md);
     border-bottom-left-radius: var(--sz-border-md);
-}
-
-.task-list__item:has(+.task-list__item) {
-    margin-bottom: var(--sz-sm);
 }
 
 .task-list_primary {

@@ -60,24 +60,23 @@ function completeEditTask(task) {
     }
 }
 
+
 window.addEventListener("DOMContentLoaded", () => {
     const app = document.querySelector(".app");
 
-    render(new HeaderComponent(), app, RenderPosition.BEFOREEND);
-    render(new FormAddTaskComponent(), app, RenderPosition.BEFOREEND);
-    
-    const taskBoardContainer = new TaskBoardComponent();
-    render(taskBoardContainer,  app, RenderPosition.BEFOREEND);
-
-    
     const tasksModel = new TasksModel();
     const taskBoardPresenter = new TaskBoardPresenter({
         boardContainer: app,
         tasksModel
     });
 
-    taskBoardPresenter.init();
+    render(new HeaderComponent(), app, RenderPosition.BEFOREEND);
+    render(new FormAddTaskComponent({ onClick: () => taskBoardPresenter.createTask() }), app, RenderPosition.BEFOREEND);
+    
+    const taskBoardContainer = new TaskBoardComponent();
+    render(taskBoardContainer,  app, RenderPosition.BEFOREEND);
 
+    taskBoardPresenter.init();
 
     const taskItems = document.querySelectorAll(".task-list__item");
     const taskLists = document.querySelectorAll(".task-list");

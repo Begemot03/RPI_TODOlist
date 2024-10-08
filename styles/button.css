@@ -1,9 +1,13 @@
 .btn {
+    --bg-clr: #969696;
+    --clr: var(--white-clr);
     padding: var(--sz-sm);
     border-radius: var(--sz-border-md);
     font-size: var(--btn-fs);
     border: none;
     outline: none;
+    background-color: var(--bg-clr);
+    color: var(--clr);
 }
 
 .btn:hover {
@@ -11,11 +15,13 @@
 }
 
 .btn-primary {
-    background-color: var(--primary-clr);
-    color: var(--white-clr);
+    --bg-clr: var(--primary-clr);
 }
 
 .btn-danger {
-    background-color: var(--danger-clr);
-    color: var(--white-clr);
+    --bg-clr: var(--danger-clr);
+}
+
+.btn:disabled {
+    background-color: #969696;
 }

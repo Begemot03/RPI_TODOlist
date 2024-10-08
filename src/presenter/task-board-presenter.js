@@ -4,6 +4,7 @@ import TaskBoardComponent from "../view/task-board-component.js";
 import TaskItemComponent from "../view/task-item-component.js";
 import TaskListComponent from "../view/task-list-component.js";
 import TaskMockItemComponent from "../view/task-mock-item-component.js";
+import ResetBtnComponent from "../view/reset-btn-component.js";
 
 
 export default class TaskBoardPresenter {
@@ -16,12 +17,12 @@ export default class TaskBoardPresenter {
     constructor({ boardContainer, tasksModel }) {
         this.#boardContainer = boardContainer;
         this.#tasksModel = tasksModel;
+
+        this.#tasksModel.addObserver(() => this.#renderBoard());
     }
 
     init() {
-        this.#boardTasks = [...this.#tasksModel.getTasks()];
-
-        this.#renderBoard();    
+        this.#renderBoard();
     }
 
     #renderTask(task, container) {
@@ -35,7 +36,10 @@ export default class TaskBoardPresenter {
     }
 
     #renderBoard() {
-        render(this.#taskBoardComponent, this.#boardContainer);
+        this.#boardTasks = [...this.#tasksModel.getTasks()];
+        this.#cleanBoard();
+
+        render(this.#taskBoardComponent, this.#boardContainer);        
 
         Object.values(Statuses).forEach(status => {
             this.#renderBoardList(status, this.#taskBoardComponent.getRoot(".task-board"));
@@ -43,7 +47,6 @@ export default class TaskBoardPresenter {
     }
 
     #renderBoardList(listStatus, container) {
-        console.log(listStatus)
         const taskListComponent = new TaskListComponent({ name: ListNamesByStatus[listStatus], status: listStatus });
         render(taskListComponent, container);
 
@@ -55,7 +58,30 @@ export default class TaskBoardPresenter {
             });
         } else {
             this.#renderEmptyList(taskListComponent.getRoot(".task-list__body"));
-            console.log(1)
         }
+
+        if(listStatus == Statuses.danger) {
+            this.#renderResetBtn(taskListComponent.getRoot(".task-list__body"));
+        }
+    }
+
+    #renderResetBtn(container) {
+        const disabled = this.#tasksModel.getTasks().filter(task => task.status == Statuses.danger) == 0;
+        const resetBtn = new ResetBtnComponent({ onClick : () => this.#tasksModel.clearTrash(), disabled });
+        render(resetBtn, container);
+    }
+
+    #cleanBoard() {
+        if(this.#taskBoardComponent.getElement() != null) this.#taskBoardComponent.getRoot(".task-board").innerHTML = "";
+    }
+
+    createTask () {
+        const taskTitle = document.querySelector(".add-task__input").value.trim();
+        if(!taskTitle) {
+            return;
+        }
+
+        this.#tasksModel.addTask(taskTitle);
+        document.querySelector(".add-task__input").value = "";
     }
 }

@@ -1,27 +1,34 @@
 import { Statuses } from "../consts.js";
+import { uuid } from "../utils.js";
 
-const tasks =  [
+const tasks = [
     {
-        id: 1,
-        name: "посажу сына",
+        id: uuid(),
+        name: "Посадить дерево",
         status: Statuses.primary,
     },
     {
-        id: 2,
-        name: "выращу дом",
-        status: Statuses.primary,
-    },
-    {
-        id: 3,
-        name: "построю дерево",
+        id: uuid(),
+        name: "Построить дом",
         status: Statuses.success,
     },
     {
-        id: 4,
-        name: "перейти дорогу на красный",
+        id: uuid(),
+        name: "Воспитать сына",
+        status: Statuses.primary,
+    },
+    {
+        id: uuid(),
+        name: "Закончить курсы по программированию",
         status: Statuses.info,
     },
+    {
+        id: uuid(),
+        name: "Перейти на здоровое питание",
+        status: Statuses.danger,
+    },
 ];
+
 
 
 export default tasks;

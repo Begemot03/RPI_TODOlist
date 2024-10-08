@@ -11,7 +11,15 @@ function createHeaderComponent() {
 }
 
 export default class HeaderComponent extends BaseComponent {
+    constructor() {
+        super();
+    }
+
     getTemplate() {
         return createHeaderComponent();
+    }
+
+    onMount() {
+        
     }
 }
