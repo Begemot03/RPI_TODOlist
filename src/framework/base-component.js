@@ -1,36 +1,34 @@
-import { createElement } from "./render.js";
+import { createElement } from './render.js';
 
 export default class BaseComponent {
-    element = null;
+	element = null;
 
-    constructor() {
-        if(new.target === BaseComponent) {
-            throw new Error("Can't instantinate BaseComponent, only concrete one");
-        }
-    }
+	constructor() {
+		if (new.target === BaseComponent) {
+			throw new Error("Can't instantinate BaseComponent, only concrete one");
+		}
+	}
 
-    getTemplate() {
-        throw new Error("Abstract method not implemented: get template");
-    }
+	getTemplate() {
+		throw new Error('Abstract method not implemented: get template');
+	}
 
-    onMount() {
-        
-    }
+	onMount() {}
 
-    getElement() {
-        if(!this.element) {
-            this.element = createElement(this.getTemplate());
-            this.onMount();
-        }
+	getElement() {
+		if (!this.element) {
+			this.element = createElement(this.getTemplate());
+			this.onMount();
+		}
 
-        return this.element;
-    }
+		return this.element;
+	}
 
-    getRoot(rootSelector) {
-        return this.element.querySelector(rootSelector);
-    }
+	getRoot(rootSelector) {
+		return this.element.querySelector(rootSelector);
+	}
 
-    removeElement() {
-        this.element = null;
-    }
+	removeElement() {
+		this.element = null;
+	}
 }

@@ -1,25 +1,21 @@
-import BaseComponent from "../framework/base-component.js";
+import BaseComponent from '../framework/base-component.js';
 
 function createHeaderComponent() {
-    return (
-        `<header class="header bg-primary">
+	return `<header class="header bg-primary">
             <div class="container">
                 <h1 class="logo">Список задач</h1>
             </div>
-        </header>`
-    )
+        </header>`;
 }
 
 export default class HeaderComponent extends BaseComponent {
-    constructor() {
-        super();
-    }
+	constructor() {
+		super();
+	}
 
-    getTemplate() {
-        return createHeaderComponent();
-    }
+	getTemplate() {
+		return createHeaderComponent();
+	}
 
-    onMount() {
-        
-    }
+	onMount() {}
 }

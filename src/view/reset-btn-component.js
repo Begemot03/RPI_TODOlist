@@ -1,31 +1,31 @@
-import BaseComponent from "../framework/base-component.js";
+import BaseComponent from '../framework/base-component.js';
 
 function createResetBtnComponentTemplate() {
-    return (`
+	return `
         <button class="btn btn-danger">Очистить</button>
-    `);
+    `;
 }
 
-export default class ResetBtnComponent extends BaseComponent{
-    #handleClick = null;
-    #disabled = false;
+export default class ResetBtnComponent extends BaseComponent {
+	#handleClick = null;
+	#disabled = false;
 
-    constructor({ onClick, disabled }) {
-        super();
-        this.#handleClick = onClick;
-        this.#disabled = disabled;
-    }
+	constructor({ onClick, disabled }) {
+		super();
+		this.#handleClick = onClick;
+		this.#disabled = disabled;
+	}
 
-    getTemplate() {
-        return createResetBtnComponentTemplate();
-    }
+	getTemplate() {
+		return createResetBtnComponentTemplate();
+	}
 
-    onMount() {
-        this.element.addEventListener("click", (e) => {
-            e.preventDefault();
-            this.#handleClick();
-        });
+	onMount() {
+		this.element.addEventListener('click', (e) => {
+			e.preventDefault();
+			this.#handleClick();
+		});
 
-        this.element.disabled = this.#disabled;
-    }
+		this.element.disabled = this.#disabled;
+	}
 }

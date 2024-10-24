@@ -1,8 +1,7 @@
-import BaseComponent from "../framework/base-component.js";
+import BaseComponent from '../framework/base-component.js';
 
 function createFormAddTaskComponentTemplate() {
-    return (
-        `<section>
+	return `<section>
             <div class="container">
                 <div class="card">
                     <div class="card__title">Новая задача</div>
@@ -12,26 +11,25 @@ function createFormAddTaskComponentTemplate() {
                     </form>
                 </div>
             </div>
-        </section>`
-    );
+        </section>`;
 }
 
 export default class FormAddTaskComponent extends BaseComponent {
-    #handleClick = null;
+	#handleClick = null;
 
-    constructor({ onClick }) {
-        super();
-        this.#handleClick = onClick;  
-    }
+	constructor({ onClick }) {
+		super();
+		this.#handleClick = onClick;
+	}
 
-    getTemplate() {
-        return createFormAddTaskComponentTemplate();
-    }
+	getTemplate() {
+		return createFormAddTaskComponentTemplate();
+	}
 
-    onMount() {
-        this.element.querySelector("form").addEventListener("submit", (e) => {
-            e.preventDefault();
-            this.#handleClick();
-        });
-    }
+	onMount() {
+		this.element.querySelector('form').addEventListener('submit', (e) => {
+			e.preventDefault();
+			this.#handleClick();
+		});
+	}
 }

@@ -1,40 +1,52 @@
-import { Statuses } from "../consts.js";
-import tasks from "../mock/tasks.js";
-import { uuid } from "../utils.js";
+import { Statuses } from '../consts.js';
+import tasks from '../mock/tasks.js';
+import { uuid } from '../utils.js';
 
 export default class TasksModel {
-    #taskBoard = tasks;
-    #observers = [];
+	#taskBoard = tasks;
+	#observers = [];
 
-    getTasks() {
-        return this.#taskBoard;
-    }
+	getTasks() {
+		return this.#taskBoard;
+	}
 
-    addTask(title) {
-        this.#taskBoard.push({ 
-            id: uuid(), 
-            name: title, 
-            status: Statuses.primary, 
-        });
+	addTask(title) {
+		this.#taskBoard.push({
+			id: uuid(),
+			name: title,
+			status: Statuses.primary,
+		});
 
-        this._nofify();
-    }
+		this._nofify();
+	}
 
-    clearTrash() {
-        this.#taskBoard = this.#taskBoard.filter(task => task.status != Statuses.danger);
+	updateTaskStatus(taskId, newStatus) {
+		const task = this.#taskBoard.find((task) => task.id == taskId);
 
-        this._nofify();
-    }
+		if (task) {
+			task.status = newStatus;
+			this._nofify();
+		}
+	}
 
-    addObserver(newObserver) {
-        this.#observers.push(newObserver);
-    }
+	clearTrash() {
+		this.#taskBoard = this.#taskBoard.filter(
+			(task) => task.status != Statuses.danger
+		);
+		this._nofify();
+	}
 
-    removeObserver(removableObserver) {
-        this.#observers = this.#observers.filter(observer => observer !== removableObserver);
-    }
+	addObserver(newObserver) {
+		this.#observers.push(newObserver);
+	}
 
-    _nofify() {
-        this.#observers.forEach(observer => observer());
-    }
+	removeObserver(removableObserver) {
+		this.#observers = this.#observers.filter(
+			(observer) => observer !== removableObserver
+		);
+	}
+
+	_nofify() {
+		this.#observers.forEach((observer) => observer());
+	}
 }

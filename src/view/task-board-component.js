@@ -1,19 +1,17 @@
-import BaseComponent from "../framework/base-component.js";
-import TaskListComponent from "./task-list-component.js";
+import BaseComponent from '../framework/base-component.js';
+import TaskListComponent from './task-list-component.js';
 
 function createTaskBoardComponentTemplate() {
-    return (
-        `
+	return `
         <section>
             <div class="container task-board">
             </div>
         </section>
-        `
-    );
+        `;
 }
 
 export default class TaskBoardComponent extends BaseComponent {
-    getTemplate() {
-        return createTaskBoardComponentTemplate();
-    }
+	getTemplate() {
+		return createTaskBoardComponentTemplate();
+	}
 }
