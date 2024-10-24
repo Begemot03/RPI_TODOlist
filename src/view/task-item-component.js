@@ -1,7 +1,7 @@
 import BaseComponent from '../framework/base-component.js';
 
 function createTaskItemComponentTemplate(task) {
-	return `<div class="task-list__item">
+	return `<div class="task-list__item" data-key="${task.id}">
             <span class="task-list__item-title">${task.name}</span>
             <input class="task-list__item-input hidden" type="text" placeholder="Название задачи...">
             <button class="task-list__item-btn btn-primary btn hidden">OK</button>
@@ -9,13 +9,19 @@ function createTaskItemComponentTemplate(task) {
 }
 
 export default class TaskItemComponent extends BaseComponent {
-	constructor({ task }) {
+	constructor(task, container) {
 		super();
 		this.task = task;
+		this.container = container;
+		this.render();
 	}
 
 	getTemplate() {
 		return createTaskItemComponentTemplate(this.task);
+	}
+
+	onUpdate(task) {
+		this.task = task;
 	}
 
 	onMount() {

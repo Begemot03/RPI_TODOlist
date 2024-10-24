@@ -9,6 +9,12 @@ function createTaskMockItemComponent() {
 }
 
 export default class TaskMockItemComponent extends BaseComponent {
+    constructor(container) {
+        super();
+        this.container = container;
+        this.render();
+    }
+
 	getTemplate() {
 		return createTaskMockItemComponent();
 	}

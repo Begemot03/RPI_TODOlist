@@ -35,6 +35,14 @@
     font-size: var(--task-item-fs);
 }
 
+.task-list__footer {
+    padding-top: var(--sz-sm);
+}
+
+.task-list__footer:empty {
+    padding-top: 0;
+}
+
 .task-list__item.task-list__item-selected {
     background-color: red;
 }

@@ -1,5 +1,4 @@
 import BaseComponent from '../framework/base-component.js';
-import TaskListComponent from './task-list-component.js';
 
 function createTaskBoardComponentTemplate() {
 	return `
@@ -11,7 +10,14 @@ function createTaskBoardComponentTemplate() {
 }
 
 export default class TaskBoardComponent extends BaseComponent {
+    constructor(container) {
+        super();
+        this.container = container;
+        this.rootSelector = ".task-board";
+        this.render();
+    }
+    
 	getTemplate() {
-		return createTaskBoardComponentTemplate();
+        return createTaskBoardComponentTemplate();
 	}
 }

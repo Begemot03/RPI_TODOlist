@@ -1,5 +1,4 @@
 import { ListNamesByStatus, Statuses } from '../consts.js';
-import { render, RenderPosition } from '../framework/render.js';
 import TaskBoardComponent from '../view/task-board-component.js';
 import TaskItemComponent from '../view/task-item-component.js';
 import TaskListComponent from '../view/task-list-component.js';
@@ -7,99 +6,175 @@ import TaskMockItemComponent from '../view/task-mock-item-component.js';
 import ResetBtnComponent from '../view/reset-btn-component.js';
 
 export default class TaskBoardPresenter {
-	#taskBoardComponent = new TaskBoardComponent();
-	#boardContainer = null;
+	#taskBoardComponent = null;
 	#tasksModel = null;
-
 	#boardTasks = [];
+	#tasksComponents = new Map();
+	#listsComponents = new Map();
+	#mockTaskListComponents = new Map();
+	#resetBtn = null;
 
-	constructor({ boardContainer, tasksModel }) {
-		this.#boardContainer = boardContainer;
+	constructor(tasksModel) {
 		this.#tasksModel = tasksModel;
-
-		this.#tasksModel.addObserver(() => this.#renderBoard());
+		this.#tasksModel.addObserver(() => this.#onUpdate());
 	}
 
-	init() {
-		this.#renderBoard();
+	init(appContainer) {
+		this.#taskBoardComponent = new TaskBoardComponent(appContainer);
+
+		this.#createLists();
+		this.#createResetBtn();
+		this.#onUpdate();
 	}
 
-	#renderBoard() {
-		console.log('render');
-		this.#boardTasks = [...this.#tasksModel.getTasks()];
-		this.#cleanBoard();
-
-		render(this.#taskBoardComponent, this.#boardContainer);
-
+	#createLists() {
 		Object.values(Statuses).forEach((status) => {
-			this.#renderBoardList(
-				status,
-				this.#taskBoardComponent.getRoot('.task-board')
+			const list = new TaskListComponent(
+				{
+					name: ListNamesByStatus[status],
+					status,
+				},
+				this.#taskBoardComponent.root(),
+				this.#handleTaskDrop.bind(this)
 			);
+
+			this.#listsComponents.set(status, list);
 		});
 	}
 
-	#renderBoardList(listStatus, container) {
-		const taskListComponent = new TaskListComponent({
-			name: ListNamesByStatus[listStatus],
-			status: listStatus,
-			onTaskDrop: this.#handleTaskDrop.bind(this),
-		});
-		render(taskListComponent, container);
-
-		const concreteTasks = this.#boardTasks.filter(
-			(task) => task.status === listStatus
+	#onUpdate() {
+		const changes = this.#differences(
+			this.#boardTasks,
+			this.#tasksModel.getTasks()
 		);
 
-		if (concreteTasks.length > 0) {
-			concreteTasks.forEach((task) => {
-				this.#renderTask(task, taskListComponent.getRoot('.task-list__body'));
-			});
-		} else {
-			this.#renderEmptyList(taskListComponent.getRoot('.task-list__body'));
-		}
+		if (!changes.hasChanges) return;
 
-		if (listStatus == Statuses.danger) {
-			this.#renderResetBtn(taskListComponent.getRoot('.task-list__body'));
-		}
+		this.#updateResetBtn();
+		this.#handleEmptyAndFilledLists(changes);
+		this.#removeTasks(changes.removed);
+		this.#addTasks(changes.added);
+
+		this.#boardTasks = JSON.parse(JSON.stringify(this.#tasksModel.getTasks()));
 	}
 
-	#renderEmptyList(container) {
-		const emptyListTaskItem = new TaskMockItemComponent();
-		render(emptyListTaskItem, container);
-	}
-
-	#renderResetBtn(container) {
-		const disabled =
-			this.#tasksModel
-				.getTasks()
-				.filter((task) => task.status == Statuses.danger) == 0;
-		const resetBtn = new ResetBtnComponent({
-			onClick: () => this.#tasksModel.clearTrash(),
-			disabled,
+	#handleEmptyAndFilledLists(changes) {
+		changes.emptyListsStatus.forEach((status) => {
+			if (!this.#mockTaskListComponents.has(status)) {
+				const emptyListTaskItem = new TaskMockItemComponent(
+					this.#listsComponents.get(status).root()
+				);
+				this.#mockTaskListComponents.set(status, emptyListTaskItem);
+			}
 		});
-		render(resetBtn, container);
+
+		changes.fillListsStatus.forEach((status) => {
+			if (this.#mockTaskListComponents.has(status)) {
+				const mock = this.#mockTaskListComponents.get(status);
+				mock.remove();
+				this.#mockTaskListComponents.delete(status);
+			}
+		});
 	}
 
-	#renderTask(task, container) {
-		const taskItemComponent = new TaskItemComponent({ task });
-		render(taskItemComponent, container);
+	#removeTasks(removedTasks) {
+		removedTasks.forEach((task) => {
+			const taskComponent = this.#tasksComponents.get(task.id);
+			if (taskComponent) {
+				taskComponent.remove();
+				this.#tasksComponents.delete(task.id);
+			}
+		});
 	}
 
-	#cleanBoard() {
-		if (this.#taskBoardComponent.getElement() != null)
-			this.#taskBoardComponent.getRoot('.task-board').innerHTML = '';
+	#addTasks(addedTasks) {
+		addedTasks.forEach((task) => {
+			const taskComponent = new TaskItemComponent(
+				task,
+				this.#listsComponents.get(task.status).root()
+			);
+			this.#tasksComponents.set(task.id, taskComponent);
+		});
 	}
 
-	#handleTaskDrop(taskId, newStatus) {
-		this.#tasksModel.updateTaskStatus(taskId, newStatus);
+	#updateResetBtn() {
+		this.#resetBtn.onUpdate(this.#tasksModel.isTrashEmpty());
+	}
+
+	#createResetBtn() {
+		const disabled = this.#tasksModel.isTrashEmpty();
+
+		const resetBtn = new ResetBtnComponent(
+			this.#listsComponents
+				.get('danger')
+				.element.querySelector('.task-list__footer'),
+			() => this.#tasksModel.clearTrash(),
+			disabled
+		);
+
+		this.#resetBtn = resetBtn;
+	}
+
+	#handleTaskDrop(taskId, newStatus, targetTaskId, dropPosition) {
+		console.log(taskId, targetTaskId, dropPosition)
+		const task = this.#tasksModel.getTaskById(taskId);
+
+		if (task.status !== newStatus) {
+			this.#tasksModel.updateTaskStatus(taskId, newStatus);
+		}
+
+		if (targetTaskId) {
+			this.#tasksModel.moveTaskToPosition(taskId, targetTaskId, dropPosition);
+		} else if (dropPosition === 'end') {
+			this.#tasksModel.moveTaskToEnd(taskId);
+		}
+	}
+
+	#differences(oldTasks, newTasks) {
+		const changes = {
+			added: [],
+			removed: [],
+			emptyListsStatus: [],
+			fillListsStatus: [],
+			hasChanges: false,
+		};
+
+		const oldTasksMap = new Map(oldTasks.map((task) => [task.id, task]));
+		const newTasksMap = new Map(newTasks.map((task) => [task.id, task]));
+
+		Object.values(Statuses).forEach((status) => {
+			if (newTasks.filter((task) => task.status == status).length == 0) {
+				changes.emptyListsStatus.push(status);
+			} else {
+				changes.fillListsStatus.push(status);
+			}
+		});
+
+		oldTasks.forEach((task) => {
+			if (!newTasksMap.has(task.id)) {
+				changes.removed.push(task);
+			}
+		});
+
+		newTasks.forEach((newTask) => {
+			const oldTask = oldTasksMap.get(newTask.id);
+			if (!oldTask) {
+				changes.added.push(newTask);
+			} else if (JSON.stringify(oldTask) != JSON.stringify(newTask)) {
+				changes.added.push(newTask);
+				changes.removed.push(newTask);
+			}
+		});
+
+		changes.hasChanges = changes.added.length > 0 || changes.removed.length > 0;
+
+		return changes;
 	}
 
 	createTask() {
 		const taskTitle = document.querySelector('.add-task__input').value.trim();
-		if (!taskTitle) {
-			return;
-		}
+
+		if (!taskTitle) return;
 
 		this.#tasksModel.addTask(taskTitle);
 		document.querySelector('.add-task__input').value = '';

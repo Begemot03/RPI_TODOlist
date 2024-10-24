@@ -17,9 +17,11 @@ function createFormAddTaskComponentTemplate() {
 export default class FormAddTaskComponent extends BaseComponent {
 	#handleClick = null;
 
-	constructor({ onClick }) {
+	constructor(container, onClick) {
 		super();
+		this.container = container;
 		this.#handleClick = onClick;
+		this.render();
 	}
 
 	getTemplate() {

@@ -10,10 +10,12 @@ export default class ResetBtnComponent extends BaseComponent {
 	#handleClick = null;
 	#disabled = false;
 
-	constructor({ onClick, disabled }) {
+	constructor(container, onClick, disabled) {
 		super();
+		this.container = container;
 		this.#handleClick = onClick;
 		this.#disabled = disabled;
+		this.render();
 	}
 
 	getTemplate() {
@@ -26,6 +28,11 @@ export default class ResetBtnComponent extends BaseComponent {
 			this.#handleClick();
 		});
 
+		this.element.disabled = this.#disabled;
+	}
+
+	onUpdate(disabled) {
+		this.#disabled = disabled;
 		this.element.disabled = this.#disabled;
 	}
 }

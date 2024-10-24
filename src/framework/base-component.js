@@ -1,7 +1,19 @@
-import { createElement } from './render.js';
+import { createElement, render } from './render.js';
+
+/*
+	Жизненный цикл компонента
+	1. Инициализация constructor
+	2. Монтирование (один раз при соединению к контейнеру) onMount
+	3. Обновление (каждый раз при обновлении свойств) onUpdate
+	4. Открепление (контейнер удаляет компонент) onUnmount
+
+*/
 
 export default class BaseComponent {
 	element = null;
+	container = null;
+	rootElement = null;
+	rootSelector = '.root';
 
 	constructor() {
 		if (new.target === BaseComponent) {
@@ -15,6 +27,16 @@ export default class BaseComponent {
 
 	onMount() {}
 
+	onUpdate() {}
+
+	onUnmount() {}
+
+	render() {
+		render(this, this.container);
+	}
+
+	root() {}
+
 	getElement() {
 		if (!this.element) {
 			this.element = createElement(this.getTemplate());
@@ -24,11 +46,18 @@ export default class BaseComponent {
 		return this.element;
 	}
 
-	getRoot(rootSelector) {
-		return this.element.querySelector(rootSelector);
+	remove() {
+		this.onMount();
+		this.element.remove();
 	}
 
-	removeElement() {
-		this.element = null;
+	root() {
+		if (!this.element) return null;
+
+		if (!this.rootElement) {
+			this.rootElement = this.element.querySelector(this.rootSelector);
+		}
+
+		return this.rootElement;
 	}
 }

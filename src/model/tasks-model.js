@@ -10,6 +10,10 @@ export default class TasksModel {
 		return this.#taskBoard;
 	}
 
+	getTaskById(id) {
+		return this.#taskBoard.find(task => task.id == id);		
+	}
+
 	addTask(title) {
 		this.#taskBoard.push({
 			id: uuid(),
@@ -27,6 +31,40 @@ export default class TasksModel {
 			task.status = newStatus;
 			this._nofify();
 		}
+	}
+
+	isTrashEmpty() {
+		return (
+			this.#taskBoard.filter((task) => task.status == 'danger').length == 0
+		);
+	}
+
+	moveTaskToPosition(taskId, targetTaskId, dropPosition) {
+		const task = this.#taskBoard.find((t) => t.id === taskId);
+		const targetTaskIndex = this.#taskBoard.findIndex((t) => t.id === targetTaskId);
+
+		if (!task || targetTaskIndex === -1) return;
+
+		this.#taskBoard = this.#taskBoard.filter((t) => t.id !== taskId);
+
+		if (dropPosition === 'before') {
+			this.#taskBoard.splice(targetTaskIndex, 0, task);
+		} else {
+			this.#taskBoard.splice(targetTaskIndex + 1, 0, task);
+		}
+
+		this._nofify();
+	}
+
+	moveTaskToEnd(taskId) {
+		const task = this.#taskBoard.find((t) => t.id === taskId);
+		if (!task) return;
+
+		this.#taskBoard = this.#taskBoard.filter((t) => t.id !== taskId);
+
+		this.#taskBoard.push(task);
+
+		this._nofify();
 	}
 
 	clearTrash() {

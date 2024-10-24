@@ -9,13 +9,13 @@ function createHeaderComponent() {
 }
 
 export default class HeaderComponent extends BaseComponent {
-	constructor() {
+	constructor(container) {
 		super();
+		this.container = container;
+		this.render();
 	}
 
 	getTemplate() {
 		return createHeaderComponent();
 	}
-
-	onMount() {}
 }
