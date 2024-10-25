@@ -12,4 +12,6 @@ const ListNamesByStatus = {
 	[Statuses.danger]: 'Корзина',
 };
 
-export { Statuses, ListNamesByStatus };
+const API_URL = "https://671be8992c842d92c381b8c6.mockapi.io/api/v1";
+
+export { Statuses, ListNamesByStatus, API_URL };

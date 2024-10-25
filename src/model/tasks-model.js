@@ -1,10 +1,27 @@
-import { Statuses } from '../consts.js';
-import tasks from '../mock/tasks.js';
-import { uuid } from '../utils.js';
+import { API_URL, Statuses } from '../consts.js';
 
 export default class TasksModel {
-	#taskBoard = tasks;
+	#taskBoard = [];
 	#observers = [];
+
+	isLoading = false;
+
+	constructor() {
+		this.loadTasks();
+	}
+
+	async loadTasks() {
+		this.#startLoading();
+
+		const response = await fetch(`${API_URL}/todos`);
+		const data = await response.json();
+
+		this.#taskBoard = data;
+
+		this._nofify();
+
+		this.#stopLoading();
+	}
 
 	getTasks() {
 		return this.#taskBoard;
@@ -14,23 +31,45 @@ export default class TasksModel {
 		return this.#taskBoard.find((task) => task.id == id);
 	}
 
-	addTask(title) {
-		this.#taskBoard.push({
-			id: uuid(),
-			name: title,
-			status: Statuses.primary,
+	async addTask(name) {
+		this.#startLoading();
+
+		await fetch(`${API_URL}/todos`, {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify({
+				name,
+				status: Statuses.primary,
+			}),
 		});
 
+		await this.loadTasks();
+
 		this._nofify();
+
+		this.#stopLoading();
 	}
 
-	updateTaskStatus(taskId, newStatus) {
-		const task = this.#taskBoard.find((task) => task.id == taskId);
+	async updateTaskStatus(taskId, newStatus) {
+		this.#startLoading();
 
-		if (task) {
-			task.status = newStatus;
-			this._nofify();
-		}
+		await fetch(`${API_URL}/todos/${taskId}`, {
+			method: 'PUT',
+			headers: {
+				'Content-type': 'application/json',
+			},
+			body: JSON.stringify({
+				status: newStatus,
+			}),
+		});
+
+		await this.loadTasks();
+
+		this._nofify();
+
+		this.#stopLoading();
 	}
 
 	isTrashEmpty() {
@@ -39,11 +78,26 @@ export default class TasksModel {
 		);
 	}
 
-	clearTrash() {
-		this.#taskBoard = this.#taskBoard.filter(
-			(task) => task.status != Statuses.danger
+	async clearTrash() {
+		this.#startLoading();
+
+		const taskInTrash = this.#taskBoard.filter(
+			(task) => task.status == Statuses.danger
 		);
+
+		await Promise.all(
+			taskInTrash.map((task) =>
+				fetch(`${API_URL}/todos/${task.id}`, {
+					method: 'delete',
+				})
+			)
+		);
+
+		await this.loadTasks();
+
 		this._nofify();
+
+		this.#stopLoading();
 	}
 
 	addObserver(newObserver) {
@@ -58,5 +112,17 @@ export default class TasksModel {
 
 	_nofify() {
 		this.#observers.forEach((observer) => observer());
+	}
+
+	#loader = document.querySelector(".loading");
+
+	#startLoading() {
+		this.isLoading = true;
+		this.#loader.classList.remove("hidden");
+	}
+
+	#stopLoading() {
+		this.isLoading = false;
+		this.#loader.classList.add("hidden");
 	}
 }
