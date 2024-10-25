@@ -27,7 +27,12 @@ export default class TaskItemComponent extends BaseComponent {
 	onMount() {
 		this.element.setAttribute('draggable', true);
 
+		this.element.addEventListener('dragend', (e) => {
+			this.element.classList.remove('task-list__item-selected');
+		});
+
 		this.element.addEventListener('dragstart', (e) => {
+			this.element.classList.add('task-list__item-selected');
 			e.dataTransfer.setData('text/plain', this.task.id);
 		});
 	}

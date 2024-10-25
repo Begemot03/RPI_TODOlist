@@ -115,19 +115,8 @@ export default class TaskBoardPresenter {
 		this.#resetBtn = resetBtn;
 	}
 
-	#handleTaskDrop(taskId, newStatus, targetTaskId, dropPosition) {
-		console.log(taskId, targetTaskId, dropPosition)
-		const task = this.#tasksModel.getTaskById(taskId);
-
-		if (task.status !== newStatus) {
-			this.#tasksModel.updateTaskStatus(taskId, newStatus);
-		}
-
-		if (targetTaskId) {
-			this.#tasksModel.moveTaskToPosition(taskId, targetTaskId, dropPosition);
-		} else if (dropPosition === 'end') {
-			this.#tasksModel.moveTaskToEnd(taskId);
-		}
+	#handleTaskDrop(taskId, newStatus) {
+		this.#tasksModel.updateTaskStatus(taskId, newStatus);
 	}
 
 	#differences(oldTasks, newTasks) {

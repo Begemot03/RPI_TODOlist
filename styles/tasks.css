@@ -44,7 +44,7 @@
 }
 
 .task-list__item.task-list__item-selected {
-    background-color: red;
+    opacity: 0.5;
 }
 
 .task-list__title {

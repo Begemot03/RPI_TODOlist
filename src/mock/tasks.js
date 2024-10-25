@@ -22,11 +22,11 @@ const tasks = [
 		name: 'Закончить курсы по программированию',
 		status: Statuses.info,
 	},
-	// {
-	// 	id: uuid(),
-	// 	name: 'Перейти на здоровое питание',
-	// 	status: Statuses.danger,
-	// },
+	{
+		id: uuid(),
+		name: 'Перейти на здоровое питание',
+		status: Statuses.danger,
+	},
 ];
 
 export default tasks;
